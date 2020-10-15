@@ -1,11 +1,11 @@
 import os
-from CE import CE, CE_e
+from CE import CE
 import matplotlib.pyplot as plt
 import sys
 from skimage import io, img_as_float
 
-path = "D:\\Circa\\czysta_baza_franka_20201013\\png"
-path_to = "D:\\Circa\\czysta_baza_franka_20201013\\png_enhanced"
+path = "D:\\Circa\\PolCovid_clean_07102020\\png_segmented_without_duplicates"
+path_to = "D:\\Circa\\PolCovid_clean_07102020\\png_segmented_enhanced_without_duplicates"
 
 pngCounter = 0
 for dirpath, dirnames, filenames in os.walk(path):
@@ -39,14 +39,5 @@ for dirpath, dirnames, filenames in os.walk(path):
         img = plt.imread(path_image_read)
 
         # process the data
-        img_enhanced = CE(img, stop_condition=70)
-
-        # SAVE the data
-        img_enhanced = img_as_float(img_enhanced)
-        io.imsave(path_image_save, img_enhanced)
-
-        # progress print
-        sys.stdout.write('\033[2K\033[1G')
-        progress = i / pngCounter * 100
-        sys.stdout.write('\r{0:0.2f}% | saved to path: '.format(progress) + path_image_save)
-        i += 1
+        img_enhanced = CE(img)
+        input("Wating for input...")

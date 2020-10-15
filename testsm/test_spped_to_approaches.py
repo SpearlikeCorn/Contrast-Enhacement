@@ -2,10 +2,15 @@ import os
 from CE import CE, CE_e
 import matplotlib.pyplot as plt
 import sys
-from skimage import io, img_as_float
+import numpy as np
+from skimage import io, exposure, img_as_uint, img_as_float
+import pandas as pd
+import time
 
-path = "D:\\Circa\\czysta_baza_franka_20201013\\png"
-path_to = "D:\\Circa\\czysta_baza_franka_20201013\\png_enhanced"
+path = "D:\\Circa\\PolCovid_clean_07102020\\png_processed_without_duplicates"
+path_to = "D:\\Circa\\PolCovid_clean_07102020\\png_processed_enhanced_without_duplicates"
+
+df = pd.DataFrame()
 
 pngCounter = 0
 for dirpath, dirnames, filenames in os.walk(path):
@@ -39,14 +44,24 @@ for dirpath, dirnames, filenames in os.walk(path):
         img = plt.imread(path_image_read)
 
         # process the data
-        img_enhanced = CE(img, stop_condition=70)
-
+        print("===CE===")
+        start = time.time()
+        img_enhanced = CE(img, stop_condition=20)
+        df.loc[bold_filename, "time CE"] = time.time() - start
+        print("time CE =", time.time() - start)
+        print("===CE_E===")
+        start = time.time()
+        img_enhanced = CE_e(img, stop_condition=20)
+        df.loc[bold_filename, "time CE_e"] = time.time() - start
+        print("time CE_e =", time.time() - start)
         # SAVE the data
         img_enhanced = img_as_float(img_enhanced)
-        io.imsave(path_image_save, img_enhanced)
+        #io.imsave(path_image_save, img_enhanced)
 
-        # progress print
+        '''# progress print
         sys.stdout.write('\033[2K\033[1G')
         progress = i / pngCounter * 100
-        sys.stdout.write('\r{0:0.2f}% | saved to path: '.format(progress) + path_image_save)
+        sys.stdout.write('\r{0:0.2f}% | saved to path: '.format(progress) + path_image_save)'''
         i += 1
+        if i > 20:
+            break
